@@ -6,8 +6,9 @@
  */
 package org.hibernate.hql.parser;
 
-import java.util.Collection;
-
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.xpath.XPath;
 import org.hibernate.hql.parser.antlr.HqlParser;
 import org.hibernate.hql.parser.process.ExplicitFromClauseIndexer;
 import org.hibernate.hql.parser.process.HqlParseTreeBuilder;
@@ -16,12 +17,9 @@ import org.hibernate.hql.parser.semantic.QuerySpec;
 import org.hibernate.hql.parser.semantic.SelectStatement;
 import org.hibernate.hql.parser.semantic.expression.LiteralIntegerExpression;
 import org.hibernate.hql.parser.semantic.expression.LiteralLongExpression;
-
 import org.junit.Test;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.xpath.XPath;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

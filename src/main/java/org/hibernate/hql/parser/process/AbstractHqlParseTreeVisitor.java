@@ -6,13 +6,6 @@
  */
 package org.hibernate.hql.parser.process;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.hql.parser.LiteralNumberFormatException;
 import org.hibernate.hql.parser.ParsingException;
 import org.hibernate.hql.parser.SemanticException;
@@ -57,11 +50,13 @@ import org.hibernate.hql.parser.semantic.from.FromElement;
 import org.hibernate.hql.parser.semantic.from.JoinedFromElement;
 import org.hibernate.hql.parser.semantic.from.TreatedFromElement;
 import org.hibernate.hql.parser.semantic.from.TreatedJoinedFromElement;
+import org.hibernate.hql.parser.semantic.groupBy.GroupingValue;
 import org.hibernate.hql.parser.semantic.order.OrderByClause;
 import org.hibernate.hql.parser.semantic.order.SortOrder;
 import org.hibernate.hql.parser.semantic.order.SortSpecification;
 import org.hibernate.hql.parser.semantic.predicate.AndPredicate;
 import org.hibernate.hql.parser.semantic.predicate.BetweenPredicate;
+import org.hibernate.hql.parser.semantic.groupBy.GroupByClause;
 import org.hibernate.hql.parser.semantic.predicate.GroupedPredicate;
 import org.hibernate.hql.parser.semantic.predicate.IndexedAttributePathPart;
 import org.hibernate.hql.parser.semantic.predicate.IsEmptyPredicate;
@@ -79,8 +74,14 @@ import org.hibernate.hql.parser.semantic.select.SelectClause;
 import org.hibernate.hql.parser.semantic.select.SelectList;
 import org.hibernate.hql.parser.semantic.select.SelectListItem;
 import org.hibernate.hql.parser.semantic.select.Selection;
-
 import org.jboss.logging.Logger;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Steve Ebersole
@@ -158,7 +159,15 @@ public abstract class AbstractHqlParseTreeVisitor extends HqlParserBaseVisitor {
 		else {
 			whereClause = null;
 		}
-		return new QuerySpec( parsingContext, getCurrentFromClause(), selectClause, whereClause );
+
+		final GroupByClause groupByClause;
+		if ( ctx.groupByClause() != null ) {
+			groupByClause = visitGroupByClause( ctx.groupByClause() );
+		}
+		else {
+			groupByClause = null;
+		}
+		return new QuerySpec( parsingContext, getCurrentFromClause(), selectClause, whereClause, groupByClause );
 	}
 
 	protected SelectClause buildInferredSelectClause(FromClause fromClause) {
@@ -283,6 +292,19 @@ public abstract class AbstractHqlParseTreeVisitor extends HqlParserBaseVisitor {
 	@Override
 	public WhereClause visitWhereClause(HqlParser.WhereClauseContext ctx) {
 		return new WhereClause( parsingContext, (Predicate) ctx.predicate().accept( this ) );
+	}
+
+	@Override
+	public GroupByClause visitGroupByClause(HqlParser.GroupByClauseContext ctx) {
+		final GroupByClause groupByClause = new GroupByClause( parsingContext );
+		for (HqlParser.GroupingValueContext groupingValueContext : ctx.groupingSpecification().groupingValue()) {
+			groupByClause.addGroupBySpecification( visitGroupingValue (groupingValueContext) );
+		}
+		return groupByClause;
+	}
+
+	@Override public GroupingValue visitGroupingValue(HqlParser.GroupingValueContext ctx) {
+		return new GroupingValue( (Expression) ctx.expression().accept( this ) );
 	}
 
 	@Override
