@@ -58,6 +58,7 @@ import org.hibernate.hql.parser.semantic.predicate.AndPredicate;
 import org.hibernate.hql.parser.semantic.predicate.BetweenPredicate;
 import org.hibernate.hql.parser.semantic.groupBy.GroupByClause;
 import org.hibernate.hql.parser.semantic.predicate.GroupedPredicate;
+import org.hibernate.hql.parser.semantic.predicate.HavingClause;
 import org.hibernate.hql.parser.semantic.predicate.IndexedAttributePathPart;
 import org.hibernate.hql.parser.semantic.predicate.IsEmptyPredicate;
 import org.hibernate.hql.parser.semantic.predicate.IsNullPredicate;
@@ -167,7 +168,16 @@ public abstract class AbstractHqlParseTreeVisitor extends HqlParserBaseVisitor {
 		else {
 			groupByClause = null;
 		}
-		return new QuerySpec( parsingContext, getCurrentFromClause(), selectClause, whereClause, groupByClause );
+
+		final HavingClause havingClause;
+		if ( ctx.groupByClause() != null ) {
+			havingClause = visitHavingClause( ctx.havingClause() );
+		}
+		else {
+			havingClause = null;
+		}
+
+		return new QuerySpec( parsingContext, getCurrentFromClause(), selectClause, whereClause, groupByClause, havingClause );
 	}
 
 	protected SelectClause buildInferredSelectClause(FromClause fromClause) {
@@ -302,6 +312,10 @@ public abstract class AbstractHqlParseTreeVisitor extends HqlParserBaseVisitor {
 		}
 		return groupByClause;
 	}
+	@Override public HavingClause visitHavingClause(HqlParser.HavingClauseContext ctx) {
+		return new HavingClause( parsingContext, (Predicate) ctx.predicate().accept( this ) );
+	}
+
 
 	@Override public GroupingValue visitGroupingValue(HqlParser.GroupingValueContext ctx) {
 		return new GroupingValue( (Expression) ctx.expression().accept( this ) );
