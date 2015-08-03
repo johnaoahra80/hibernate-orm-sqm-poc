@@ -9,7 +9,7 @@ package org.hibernate.hql.parser;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.hibernate.hql.parser.antlr.HqlParser;
 import org.hibernate.hql.parser.process.ExplicitFromClauseIndexer;
-import org.hibernate.hql.parser.process.HqlParseTreeBuilder;
+import org.hibernate.hql.parser.process.builder.HqlParseTreeBuilder;
 import org.hibernate.hql.parser.process.SemanticQueryBuilder;
 import org.hibernate.hql.parser.semantic.QuerySpec;
 import org.hibernate.hql.parser.semantic.SelectStatement;

@@ -6,21 +6,18 @@
  */
 package org.hibernate.hql.parser;
 
-import java.util.Collection;
-
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.xpath.XPath;
 import org.hibernate.hql.parser.antlr.HqlParser;
 import org.hibernate.hql.parser.antlr.HqlParser.EqualityPredicateContext;
 import org.hibernate.hql.parser.antlr.HqlParser.LiteralExpressionContext;
 import org.hibernate.hql.parser.antlr.HqlParserBaseVisitor;
-import org.hibernate.hql.parser.process.HqlParseTreeBuilder;
-
+import org.hibernate.hql.parser.process.builder.HqlParseTreeBuilder;
 import org.junit.Test;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.xpath.XPath;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**

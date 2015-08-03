@@ -7,7 +7,7 @@
 package org.hibernate.hql.parser;
 
 import org.hibernate.hql.parser.process.ExplicitFromClauseIndexer;
-import org.hibernate.hql.parser.process.HqlParseTreeBuilder;
+import org.hibernate.hql.parser.process.builder.HqlParseTreeBuilder;
 import org.hibernate.hql.parser.antlr.HqlParser;
 import org.hibernate.hql.parser.process.ImplicitAliasGenerator;
 import org.hibernate.hql.parser.process.ParsingContext;
