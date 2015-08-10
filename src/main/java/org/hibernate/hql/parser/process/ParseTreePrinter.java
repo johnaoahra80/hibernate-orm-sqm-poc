@@ -6,21 +6,20 @@
  */
 package org.hibernate.hql.parser.process;
 
-import org.hibernate.hql.parser.antlr.HqlParser;
-import org.hibernate.hql.parser.antlr.HqlParserBaseListener;
-
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.hibernate.hql.parser.antlr.HqlParserBaseListener;
 
 /**
  * @author Steve Ebersole
  */
-public class HqlParseTreePrinter extends HqlParserBaseListener {
-	private final HqlParser parser;
+public class ParseTreePrinter extends HqlParserBaseListener {
+	private final Parser parser;
 
 	private int depth = 0;
 
-	public HqlParseTreePrinter(HqlParser parser) {
+	public ParseTreePrinter(Parser parser) {
 		this.parser = parser;
 	}
 

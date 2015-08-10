@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="Books">
+<!--
+        <class>com.agis.livedb.domain.AddressEntity</class>
+        <class>com.agis.livedb.domain.TrafficCameraEntity</class>
+        <class>com.agis.livedb.domain.TrafficPhotoEntity</class>
+        <class>com.agis.livedb.domain.TrafficReportEntity</class>
+-->
+    </persistence-unit>
+</persistence>

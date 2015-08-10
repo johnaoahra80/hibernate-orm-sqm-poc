@@ -11,9 +11,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.hibernate.hql.parser.ParsingException;
-import org.hibernate.hql.parser.antlr.HqlLexer;
-import org.hibernate.hql.parser.antlr.HqlParser;
-import org.hibernate.hql.parser.process.HqlParseTreePrinter;
+import org.hibernate.hql.parser.antlr.JpqlLexer;
+import org.hibernate.hql.parser.antlr.JpqlParser;
+import org.hibernate.hql.parser.process.ParseTreePrinter;
 import org.hibernate.hql.parser.process.ParseTreeBuilder;
 
 import java.text.ParseException;
@@ -35,17 +35,17 @@ public class JpqlParseTreeBuilder implements ParseTreeBuilder {
 			throw new ParsingException( "query is not of type: " + String.class.getName() );
 		}
 
-		String hql = (String) query;
+		String jpql = (String) query;
 		// Build the lexer
-		HqlLexer hqlLexer = new HqlLexer( new ANTLRInputStream( hql ) );
+		JpqlLexer jpqlLexer = new JpqlLexer( new ANTLRInputStream( jpql ) );
 
 		// Build the parser...
-		final HqlParser parser = new HqlParser( new CommonTokenStream( hqlLexer ) );
+		final JpqlParser parser = new JpqlParser( new CommonTokenStream( jpqlLexer ) );
 
 		// this part would be protected by logging most likely.  Print the parse tree structure
 		if ( debugEnabled ) {
-			ParseTreeWalker.DEFAULT.walk( new HqlParseTreePrinter( parser ), parser.statement() );
-			hqlLexer.reset();
+			ParseTreeWalker.DEFAULT.walk( new ParseTreePrinter( parser ), parser.statement() );
+			jpqlLexer.reset();
 			parser.reset();
 		}
 

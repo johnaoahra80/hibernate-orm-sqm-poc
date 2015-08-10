@@ -12,7 +12,7 @@ import org.hibernate.hql.parser.antlr.HqlParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.hibernate.hql.parser.process.HqlParseTreePrinter;
+import org.hibernate.hql.parser.process.ParseTreePrinter;
 
 /**
  * @author Steve Ebersole
@@ -34,7 +34,7 @@ public class HqlParseTreeBuilder {
 
 		// this part would be protected by logging most likely.  Print the parse tree structure
 		if ( debugEnabled ) {
-			ParseTreeWalker.DEFAULT.walk( new HqlParseTreePrinter( parser ), parser.statement() );
+			ParseTreeWalker.DEFAULT.walk( new ParseTreePrinter( parser ), parser.statement() );
 			hqlLexer.reset();
 			parser.reset();
 		}
