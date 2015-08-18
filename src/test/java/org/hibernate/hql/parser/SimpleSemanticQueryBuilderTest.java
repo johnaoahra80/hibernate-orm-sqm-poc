@@ -56,13 +56,16 @@ public class SimpleSemanticQueryBuilderTest {
 		Object rhs = logicalExpression.getChild( 2 ).accept( semanticQueryBuilder );
 		assertNotNull( rhs );
 		assertTrue( rhs instanceof LiteralIntegerExpression );
-		assertEquals( 2, ( (LiteralIntegerExpression) rhs ).getLiteralValue().intValue() );
+		assertEquals( 2, ((LiteralIntegerExpression) rhs).getLiteralValue().intValue() );
 
 		parser.reset();
 
 		semanticQueryBuilder = new SemanticQueryBuilder( parsingContext, explicitFromClauseIndexer );
 		SelectStatement selectStatement = semanticQueryBuilder.visitSelectStatement( parser.selectStatement() );
 		selectStatement.getQuerySpec();
+
+		QuerySpec querySpec = selectStatement.getQuerySpec();
+		assertNotNull( querySpec );
 	}
 
 	@Test
@@ -122,6 +125,17 @@ public class SimpleSemanticQueryBuilderTest {
 	@Test
 	public void testSimpleDynamicInstantiation() throws Exception {
 		final String query = "select new org.hibernate.hql.parser.SimpleSemanticQueryBuilderTest$DTO(a.basic1 as id, a.basic2 as name) from Something a";
+		final SelectStatement selectStatement = (SelectStatement) SemanticQueryInterpreter.interpretQuery(
+				query,
+				new ConsumerContextTestingImpl()
+		);
+		QuerySpec querySpec = selectStatement.getQuerySpec();
+		assertNotNull( querySpec );
+	}
+
+	@Test
+	public void testSelect() throws Exception {
+		final String query = "select from book order by book.id desc";
 		final SelectStatement selectStatement = (SelectStatement) SemanticQueryInterpreter.interpretQuery(
 				query,
 				new ConsumerContextTestingImpl()

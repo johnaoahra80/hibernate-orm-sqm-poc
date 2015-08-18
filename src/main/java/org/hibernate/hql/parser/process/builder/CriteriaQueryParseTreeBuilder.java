@@ -8,25 +8,32 @@ package org.hibernate.hql.parser.process.builder;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.hibernate.hql.parser.antlr.HqlLexer;
 import org.hibernate.hql.parser.antlr.HqlParser;
+import org.hibernate.hql.parser.criteria.ExpressionFactory;
 import org.hibernate.hql.parser.process.HqlParseTreePrinter;
-import org.hibernate.hql.parser.process.ParseTreeBuilder;
-import org.hibernate.internal.QueryImpl;
-import org.hibernate.jpa.criteria.compile.CompilableCriteria;
-import org.hibernate.jpa.criteria.compile.CriteriaCompiler;
-import org.hibernate.jpa.criteria.compile.CriteriaQueryTypeQueryAdapter;
-import org.hibernate.jpa.spi.HibernateEntityManagerImplementor;
+import org.hibernate.hql.parser.process.ParsingContext;
+import org.hibernate.hql.parser.semantic.QuerySpec;
+import org.hibernate.hql.parser.semantic.expression.Expression;
+import org.hibernate.hql.parser.semantic.from.FromClause;
+import org.hibernate.hql.parser.semantic.groupBy.GroupByClause;
+import org.hibernate.hql.parser.semantic.predicate.HavingClause;
+import org.hibernate.hql.parser.semantic.predicate.WhereClause;
+import org.hibernate.hql.parser.semantic.select.SelectClause;
+import org.hibernate.hql.parser.semantic.select.SelectList;
+import org.hibernate.hql.parser.semantic.select.SelectListItem;
 
-import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 import java.text.ParseException;
+import java.util.Set;
 
 /**
  * @author Steve Ebersole
  */
-public class CriteriaQueryParseTreeBuilder implements ParseTreeBuilder {
+public class CriteriaQueryParseTreeBuilder  {
 	/**
 	 * Singleton access
 	 */
@@ -51,11 +58,81 @@ public class CriteriaQueryParseTreeBuilder implements ParseTreeBuilder {
 		return parser;
 	}
 
-	@Override
-	public Parser parse(Object query) throws ParseException {
-		return this.parse( query, null );
+	public QuerySpec parse(Object query) throws ParseException {
+
+		if ( !(query instanceof CriteriaQuery) ) {
+//			throw new ParseException( "Incorrect query type: " + query.getClass().getName() );
+			return null;
+		}
+
+		CriteriaQuery criteriaQuery = (CriteriaQuery) query;
+
+		ParsingContext parsingContext = null;
+
+		Selection selection = criteriaQuery.getSelection();
+
+		Set<Root> roots = criteriaQuery.getRoots();
+
+//		criteriaQuery.getRestriction()
+
+//		for( Root root: roots){
+//			root.
+//		}
+
+//		selection.
+
+//		final SelectStatement selectStatement = new SelectStatement( parsingContext );
+//		selectStatement.applyQuerySpec( visitQuerySpec( ctx.querySpec() ) );
+//		if ( ctx.orderByClause() != null ) {
+//			selectStatement.applyOrderByClause( visitOrderByClause( ctx.orderByClause() ) );
+//		}
+//
+//		return selectStatement;
+//
+//
+		FromClause fromClause = new FromClause( parsingContext );
+
+
+		SelectClause selectClause = new SelectClause( getSelection(criteriaQuery), criteriaQuery.isDistinct() );
+
+		WhereClause whereClause = new WhereClause( null );
+		GroupByClause groupByClause = new GroupByClause( null );
+		HavingClause havingClause = new HavingClause( null );
+
+
+
+
+		return new QuerySpec( null, fromClause,  selectClause, whereClause, groupByClause, havingClause);
 	}
 
+	private org.hibernate.hql.parser.semantic.select.Selection getSelection(CriteriaQuery criteriaQuery) {
+
+		SelectList selectList = new SelectList();
+
+		if(criteriaQuery.getSelection().isCompoundSelection()) {
+			for (Object selectionObj : criteriaQuery.getSelection().getCompoundSelectionItems()) {
+				if ( selectionObj instanceof Selection ) {
+					Selection selection = (Selection) selectionObj;
+
+
+					SelectListItem selectListItem = new SelectListItem( null );
+					selectList.addSelectListItem( selectListItem );
+				}
+
+			}
+		}
+		else {
+			Expression expression = ExpressionFactory.getExpression( criteriaQuery.getSelection() );
+
+			SelectListItem selectListItem = new SelectListItem( expression, criteriaQuery.getSelection().getAlias());
+
+			selectList.addSelectListItem( selectListItem );
+		}
+
+		return selectList;
+	}
+
+/*
 	public Parser parse(Object query, final HibernateEntityManagerImplementor entityManager) throws ParseException {
 
 		CriteriaCompiler criteriaCompiler = new CriteriaCompiler( entityManager );
@@ -71,4 +148,5 @@ public class CriteriaQueryParseTreeBuilder implements ParseTreeBuilder {
 
 		return null;
 	}
+*/
 }

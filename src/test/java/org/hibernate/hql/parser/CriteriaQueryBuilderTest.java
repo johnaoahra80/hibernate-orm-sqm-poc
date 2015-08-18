@@ -6,16 +6,15 @@
  */
 package org.hibernate.hql.parser;
 
-import org.antlr.v4.runtime.Parser;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.hql.jpa.JpaBootstrap;
 import org.hibernate.hql.parser.process.builder.CriteriaQueryParseTreeBuilder;
+import org.hibernate.hql.parser.semantic.QuerySpec;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.jpa.AvailableSettings;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.jpa.boot.spi.PersistenceUnitDescriptor;
-import org.hibernate.jpa.spi.HibernateEntityManagerImplementor;
 import org.junit.Test;
 
 import javax.persistence.Entity;
@@ -75,16 +74,16 @@ public class CriteriaQueryBuilderTest {
 		q.select( b ).orderBy( cb.desc( b.get( "id" ) ) );
 
 
-		Parser criteriaQueryParser = null;
+		QuerySpec criteriaQuerySpec = null;
 
 		try {
-			criteriaQueryParser = CriteriaQueryParseTreeBuilder.INSTANCE.parse( q, (HibernateEntityManagerImplementor) factory.createEntityManager() );
+			criteriaQuerySpec = CriteriaQueryParseTreeBuilder.INSTANCE.parse( q);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 
 
-		assertNotNull( criteriaQueryParser );
+		assertNotNull( criteriaQuerySpec );
 
 	}
 
