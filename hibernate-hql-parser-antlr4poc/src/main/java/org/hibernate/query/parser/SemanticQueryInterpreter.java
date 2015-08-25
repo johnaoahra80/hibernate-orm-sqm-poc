@@ -6,21 +6,21 @@
  */
 package org.hibernate.query.parser;
 
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-
-import org.hibernate.query.parser.internal.hql.antlr.HqlParser;
-import org.hibernate.query.parser.internal.hql.phase2.SemanticQueryBuilder;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.hibernate.query.parser.internal.ParsingContext;
+import org.hibernate.query.parser.internal.criteriaQuery.CriteriaQuerySemanticQueryBuilder;
 import org.hibernate.query.parser.internal.hql.HqlParseTreeBuilder;
+import org.hibernate.query.parser.internal.hql.antlr.HqlParser;
 import org.hibernate.query.parser.internal.hql.phase1.FromClauseProcessor;
+import org.hibernate.query.parser.internal.hql.phase2.SemanticQueryBuilder;
 import org.hibernate.sqm.query.DeleteStatement;
 import org.hibernate.sqm.query.SelectStatement;
 import org.hibernate.sqm.query.Statement;
 import org.hibernate.sqm.query.UpdateStatement;
 
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 
 /**
  * Main entry point into the query parser.
@@ -62,7 +62,8 @@ public class SemanticQueryInterpreter {
 	 * @return The semantic representation of the incoming query.
 	 */
 	public static SelectStatement interpret(CriteriaQuery query, ConsumerContext consumerContext) {
-		throw new NotYetImplementedException();
+		final ParsingContext parsingContext = new ParsingContext( consumerContext );
+		return new CriteriaQuerySemanticQueryBuilder(parsingContext, query).visitSelectStatement();
 	}
 
 	/**
