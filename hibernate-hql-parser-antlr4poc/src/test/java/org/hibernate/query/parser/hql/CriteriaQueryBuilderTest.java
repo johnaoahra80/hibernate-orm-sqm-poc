@@ -6,8 +6,11 @@
  */
 package org.hibernate.query.parser.hql;
 
+import org.hibernate.query.parser.Author;
 import org.hibernate.query.parser.Book;
+import org.hibernate.query.parser.Book_;
 import org.hibernate.query.parser.SemanticQueryInterpreter;
+import org.hibernate.sqm.query.QuerySpec;
 import org.hibernate.sqm.query.SelectStatement;
 import org.junit.Test;
 
@@ -16,6 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import static org.junit.Assert.assertNotNull;
@@ -50,7 +54,6 @@ public class CriteriaQueryBuilderTest extends CriteriaQueryBuilderAbstractTest {
 
 	}
 
-/*
 	@Test
 	public void joinCriteriaQuerTest() {
 
@@ -70,17 +73,14 @@ public class CriteriaQueryBuilderTest extends CriteriaQueryBuilderAbstractTest {
 
 		QuerySpec criteriaQuerySpec = null;
 
-		try {
-			criteriaQuerySpec = CriteriaQueryParseTreeBuilder.INSTANCE.parse( q );
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		SelectStatement criteriaQuerySelect = null;
 
+		criteriaQuerySelect = SemanticQueryInterpreter.interpret( q, null );
 
 		assertNotNull( criteriaQuerySpec );
 
 	}
 
-*/
+
 
 }

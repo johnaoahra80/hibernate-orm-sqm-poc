@@ -6,11 +6,14 @@
  */
 package org.hibernate.query.parser.internal.criteriaQuery;
 
+import org.hibernate.query.parser.NotYetImplementedException;
 import org.hibernate.query.parser.internal.ParsingContext;
 import org.hibernate.sqm.query.QuerySpec;
 import org.hibernate.sqm.query.SelectStatement;
 import org.hibernate.sqm.query.expression.Expression;
 import org.hibernate.sqm.query.from.FromClause;
+import org.hibernate.sqm.query.order.OrderByClause;
+import org.hibernate.sqm.query.order.SortSpecification;
 import org.hibernate.sqm.query.predicate.WhereClause;
 import org.hibernate.sqm.query.select.SelectClause;
 import org.hibernate.sqm.query.select.SelectList;
@@ -19,6 +22,8 @@ import org.hibernate.sqm.query.select.Selection;
 import org.jboss.logging.Logger;
 
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import java.util.List;
 
 /**
  * @author Steve Ebersole
@@ -63,23 +68,19 @@ public class CriteriaQuerySemanticQueryBuilder {
 		// for the moment, only selectStatements are valid...
 //		return visitSelectStatement( ctx.selectStatement() );
 
-//		throw new NotYetImplementedException();
-
 		final SelectStatement selectStatement = new SelectStatement();
 		selectStatement.applyQuerySpec( visitQuerySpec( ) );
-/*
-//TODO: implement order by
-		if ( ctx.orderByClause() != null ) {
-			selectStatement.applyOrderByClause( visitOrderByClause( ctx.orderByClause() ) );
+
+		if ( query.getOrderList() != null ) {
+			selectStatement.applyOrderByClause( visitOrderByClause( query.getOrderList() ) );
 		}
-*/
 
 		return selectStatement;
 
 	}
 
 
-	public QuerySpec visitQuerySpec() {
+	private QuerySpec visitQuerySpec() {
 		final SelectClause selectClause;
 		if ( query.getSelection() != null ) {
 			selectClause = visitSelectClause();
@@ -136,6 +137,22 @@ public class CriteriaQuerySemanticQueryBuilder {
 		return selectList;
 	}
 
+	private OrderByClause visitOrderByClause( List<Order> orderbyList){
+
+		OrderByClause orderByClause = new OrderByClause();
+
+		for(Order order : orderbyList)
+		{
+			Expression expression = ExpressionFactory.getExpression( order.getExpression() );
+
+//			TODO: collation and sort order
+			SortSpecification sortSpecification = new SortSpecification( expression );
+			orderByClause.addSortSpecification( sortSpecification );
+		}
+
+		throw new NotYetImplementedException();
+//		return  null;
+	}
 /*
 	@Override
 	public QuerySpec visitQuerySpec(HqlParser.QuerySpecContext ctx) {

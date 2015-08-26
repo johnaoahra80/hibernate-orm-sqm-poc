@@ -2,7 +2,9 @@ package org.hibernate.query.parser.internal.criteriaQuery;
 
 
 import org.hibernate.jpa.criteria.path.RootImpl;
+import org.hibernate.jpa.criteria.path.SingularAttributePath;
 import org.hibernate.jpa.internal.metamodel.EntityTypeImpl;
+import org.hibernate.query.parser.NotYetImplementedException;
 import org.hibernate.sqm.domain.AttributeDescriptor;
 import org.hibernate.sqm.domain.CollectionTypeDescriptor;
 import org.hibernate.sqm.domain.CompositeTypeDescriptor;
@@ -29,8 +31,18 @@ public class ExpressionFactory {
 		}
 */
 
+//		TODO: do away with multiple if statements
 //		return new LiteralStringExpression( selection.toString() );
-		return new EntityTypeExpression( new EntityTypeDescriptorImpl( ((EntityTypeImpl) ( (RootImpl) selection ).getEntityType()).getTypeName()));
+		if(selection  instanceof RootImpl){
+			return new EntityTypeExpression( new EntityTypeDescriptorImpl( ((EntityTypeImpl) ( (RootImpl) selection ).getEntityType()).getTypeName()));
+		}
+		else if(selection instanceof SingularAttributePath){
+			return new EntityTypeExpression( new EntityTypeDescriptorImpl( ((SingularAttributePath) selection ).getAttribute().getJavaType().toString()));
+		}
+		else
+		{
+			throw new NotYetImplementedException();
+		}
 	}
 
 
