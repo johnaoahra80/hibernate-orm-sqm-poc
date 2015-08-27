@@ -16,7 +16,7 @@ public class SelectStatement implements Statement {
 	private OrderByClause orderByClause;
 
 	public SelectStatement() {
-		this.orderByClause = new OrderByClause();
+		this.orderByClause = null; //new OrderByClause();
 	}
 
 	public QuerySpec getQuerySpec() {

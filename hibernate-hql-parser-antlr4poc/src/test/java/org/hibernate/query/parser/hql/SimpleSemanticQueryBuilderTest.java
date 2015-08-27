@@ -6,8 +6,9 @@
  */
 package org.hibernate.query.parser.hql;
 
-import java.util.Collection;
-
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.xpath.XPath;
 import org.hibernate.query.parser.SemanticException;
 import org.hibernate.query.parser.SemanticQueryInterpreter;
 import org.hibernate.query.parser.internal.hql.HqlParseTreeBuilder;
@@ -16,22 +17,19 @@ import org.hibernate.query.parser.internal.hql.phase1.FromClauseProcessor;
 import org.hibernate.query.parser.internal.hql.phase2.SemanticQueryBuilder;
 import org.hibernate.sqm.query.QuerySpec;
 import org.hibernate.sqm.query.SelectStatement;
+import org.hibernate.sqm.query.Statement;
 import org.hibernate.sqm.query.expression.LiteralIntegerExpression;
 import org.hibernate.sqm.query.expression.LiteralLongExpression;
 import org.hibernate.sqm.query.from.FromClause;
 import org.hibernate.sqm.query.from.FromElementSpace;
 import org.hibernate.sqm.query.predicate.InSubQueryPredicate;
-
 import org.junit.Test;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.xpath.XPath;
+import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -104,7 +102,7 @@ public class SimpleSemanticQueryBuilderTest {
 		Object rhs = logicalExpression.getChild( 2 ).accept( semanticQueryBuilder );
 		assertNotNull( rhs );
 		assertTrue( rhs instanceof LiteralLongExpression );
-		assertEquals( 2L, ( (LiteralLongExpression) rhs ).getLiteralValue().longValue() );
+		assertEquals( 2L, ((LiteralLongExpression) rhs).getLiteralValue().longValue() );
 
 	}
 
@@ -173,6 +171,13 @@ public class SimpleSemanticQueryBuilderTest {
 		);
 		QuerySpec querySpec = selectStatement.getQuerySpec();
 		assertNotNull( querySpec );
+	}
+
+	@Test
+	public void simpleOrderByTest() {
+		final String query = "from Book b order by b.id asc";
+		Statement statement = 	SemanticQueryInterpreter.interpret( query, new ConsumerContextTestingImpl() );
+		assertNotNull( statement );
 	}
 
 	private static class DTO {

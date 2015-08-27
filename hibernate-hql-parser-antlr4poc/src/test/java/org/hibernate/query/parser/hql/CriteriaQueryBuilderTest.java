@@ -6,9 +6,9 @@
  */
 package org.hibernate.query.parser.hql;
 
-import org.hibernate.query.parser.Author;
-import org.hibernate.query.parser.Book;
-import org.hibernate.query.parser.Book_;
+import org.hibernate.query.parser.model.books.Author;
+import org.hibernate.query.parser.model.books.Book;
+import org.hibernate.query.parser.model.books.Book_;
 import org.hibernate.query.parser.SemanticQueryInterpreter;
 import org.hibernate.sqm.query.QuerySpec;
 import org.hibernate.sqm.query.SelectStatement;

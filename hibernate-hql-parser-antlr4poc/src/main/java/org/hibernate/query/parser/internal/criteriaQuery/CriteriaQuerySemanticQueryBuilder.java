@@ -6,13 +6,13 @@
  */
 package org.hibernate.query.parser.internal.criteriaQuery;
 
-import org.hibernate.query.parser.NotYetImplementedException;
 import org.hibernate.query.parser.internal.ParsingContext;
 import org.hibernate.sqm.query.QuerySpec;
 import org.hibernate.sqm.query.SelectStatement;
 import org.hibernate.sqm.query.expression.Expression;
 import org.hibernate.sqm.query.from.FromClause;
 import org.hibernate.sqm.query.order.OrderByClause;
+import org.hibernate.sqm.query.order.SortOrder;
 import org.hibernate.sqm.query.order.SortSpecification;
 import org.hibernate.sqm.query.predicate.WhereClause;
 import org.hibernate.sqm.query.select.SelectClause;
@@ -68,9 +68,11 @@ public class CriteriaQuerySemanticQueryBuilder {
 		// for the moment, only selectStatements are valid...
 //		return visitSelectStatement( ctx.selectStatement() );
 
+		//select statements
 		final SelectStatement selectStatement = new SelectStatement();
 		selectStatement.applyQuerySpec( visitQuerySpec( ) );
 
+		//order by clause
 		if ( query.getOrderList() != null ) {
 			selectStatement.applyOrderByClause( visitOrderByClause( query.getOrderList() ) );
 		}
@@ -145,13 +147,22 @@ public class CriteriaQuerySemanticQueryBuilder {
 		{
 			Expression expression = ExpressionFactory.getExpression( order.getExpression() );
 
+			SortOrder sortOrder;
+			//TODO: remove string literals
+			if(order.isAscending()) {
+				sortOrder = SortOrder.interpret( "asc" );
+			}
+			else {
+				sortOrder = SortOrder.interpret( "desc" );
+			}
+
 //			TODO: collation and sort order
-			SortSpecification sortSpecification = new SortSpecification( expression );
+			SortSpecification sortSpecification = new SortSpecification( expression, sortOrder );
 			orderByClause.addSortSpecification( sortSpecification );
 		}
 
-		throw new NotYetImplementedException();
-//		return  null;
+//		throw new NotYetImplementedException();
+		return  orderByClause;
 	}
 /*
 	@Override

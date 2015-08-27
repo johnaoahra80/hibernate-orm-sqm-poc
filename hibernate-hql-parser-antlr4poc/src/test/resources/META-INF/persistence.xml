@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
     <persistence-unit name="Books">
-                <class>org.hibernate.query.parser.Book</class>
-                <class>org.hibernate.query.parser.Author</class>
+                <class>org.hibernate.query.parser.model.books.Book</class>
+                <class>org.hibernate.query.parser.model.books.Author</class>
     </persistence-unit>
 </persistence>

@@ -1,4 +1,4 @@
-package org.hibernate.query.parser;
+package org.hibernate.query.parser.model.books;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;

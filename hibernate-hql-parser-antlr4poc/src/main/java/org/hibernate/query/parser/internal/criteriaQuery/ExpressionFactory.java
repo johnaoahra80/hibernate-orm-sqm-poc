@@ -37,7 +37,8 @@ public class ExpressionFactory {
 			return new EntityTypeExpression( new EntityTypeDescriptorImpl( ((EntityTypeImpl) ( (RootImpl) selection ).getEntityType()).getTypeName()));
 		}
 		else if(selection instanceof SingularAttributePath){
-			return new EntityTypeExpression( new EntityTypeDescriptorImpl( ((SingularAttributePath) selection ).getAttribute().getJavaType().toString()));
+			//TODO: this is not correct, need to compare against HQL example
+			return new EntityTypeExpression( new EntityTypeDescriptorImpl( ((SingularAttributePath) selection).getAttribute().getJavaMember().toString()));
 		}
 		else
 		{
